@@ -9,7 +9,7 @@ def test_empty_text_yields_no_chunks() -> None:
 
 
 def test_short_text_is_one_chunk() -> None:
-    chunks = chunk_text("hello world", chunk_size=8)
+    chunks = chunk_text("hello world", chunk_size=8, overlap=2)
     assert chunks == ["hello world"]
 
 

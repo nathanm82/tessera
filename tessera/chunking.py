@@ -7,10 +7,8 @@ tokens, so a ``chunk_size`` here roughly tracks the encoder's context budget.
 
 from __future__ import annotations
 
-from typing import List
 
-
-def chunk_text(text: str, chunk_size: int = 256, overlap: int = 32) -> List[str]:
+def chunk_text(text: str, chunk_size: int = 256, overlap: int = 32) -> list[str]:
     """Split ``text`` into windows of at most ``chunk_size`` tokens.
 
     ``overlap`` tokens are shared between consecutive windows so that context
@@ -26,7 +24,7 @@ def chunk_text(text: str, chunk_size: int = 256, overlap: int = 32) -> List[str]
         return []
 
     step = chunk_size
-    chunks: List[str] = []
+    chunks: list[str] = []
     for start in range(0, len(words), step):
         window = words[start : start + chunk_size]
         chunks.append(" ".join(window))

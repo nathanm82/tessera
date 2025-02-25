@@ -7,7 +7,7 @@ name = "tessera-rag"
 dynamic = ["version"]
 description = "Multimodal retrieval-augmented generation framework combining image and text encoders"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "Nathanm" }]
 dependencies = [
@@ -30,11 +30,11 @@ packages = ["tessera"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
-# B905: zip(strict=...) is 3.10+, we still support 3.9.
+# B905: not every zip() needs an explicit strict= in this codebase.
 ignore = ["B905"]
 
 [tool.ruff.lint.per-file-ignores]
@@ -42,7 +42,7 @@ ignore = ["B905"]
 "examples/*" = ["E501", "T201"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.12"
 warn_redundant_casts = true
 warn_unused_ignores = true
 disallow_untyped_defs = true

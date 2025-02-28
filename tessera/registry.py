@@ -6,7 +6,8 @@ assemble a pipeline from a config without importing every backend up front.
 
 from __future__ import annotations
 
-from typing import Callable, Generic, TypeVar
+from collections.abc import Callable
+from typing import Generic, TypeVar
 
 from tessera.exceptions import RegistrationError
 

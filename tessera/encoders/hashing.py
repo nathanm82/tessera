@@ -17,6 +17,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from tessera.encoders.base import Encoder
+from tessera.similarity import l2_normalize
 from tessera.types import Modality
 
 _TOKEN_RE = re.compile(r"[a-z0-9]+")
@@ -53,7 +54,7 @@ class HashingEncoder(Encoder):
             for token in _TOKEN_RE.findall(text.lower()):
                 index, sign = _bucket(token.encode("utf-8"), self._dim)
                 out[row, index] += sign
-        return out
+        return l2_normalize(out)
 
     def encode_image(self, images: Sequence[object]) -> NDArray[np.float32]:
         out = np.zeros((len(images), self._dim), dtype=np.float32)
@@ -64,7 +65,7 @@ class HashingEncoder(Encoder):
             for start in range(0, stop, window):
                 index, sign = _bucket(data[start : start + window], self._dim)
                 out[row, index] += sign
-        return out
+        return l2_normalize(out)
 
     @staticmethod
     def _read(image: object) -> bytes:

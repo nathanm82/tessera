@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -61,6 +63,29 @@ class InMemoryVectorStore(VectorStore):
             SearchHit(id=self._ids[i], score=float(score), payload=self._payloads[i])
             for i, score in zip(indices, scores)
         ]
+
+    def save(self, path: str | Path) -> None:
+        """Persist the store to ``path`` as ``vectors.npy`` plus ``meta.json``."""
+        directory = Path(path)
+        directory.mkdir(parents=True, exist_ok=True)
+        vectors = self._vectors if self._vectors is not None else np.zeros((0, 0), np.float32)
+        np.save(directory / "vectors.npy", vectors)
+        with (directory / "meta.json").open("w", encoding="utf-8") as handle:
+            json.dump({"ids": self._ids, "payloads": self._payloads}, handle)
+
+    @classmethod
+    def load(cls, path: str | Path) -> InMemoryVectorStore:
+        """Reconstruct a store previously written by :meth:`save`."""
+        directory = Path(path)
+        store = cls()
+        vectors = np.load(directory / "vectors.npy", allow_pickle=False)
+        with (directory / "meta.json").open(encoding="utf-8") as handle:
+            meta = json.load(handle)
+        if vectors.size:
+            store._vectors = vectors.astype(np.float32)
+        store._ids = list(meta["ids"])
+        store._payloads = list(meta["payloads"])
+        return store
 
     def __len__(self) -> int:
         return len(self._ids)

@@ -11,7 +11,8 @@ import numpy as np
 from numpy.typing import NDArray
 
 from tessera.exceptions import DimensionMismatchError, StoreError
-from tessera.similarity import cosine_similarity, top_k
+from tessera.similarity import cosine_similarity
+from tessera.similarity import top_k as select_top_k
 from tessera.stores.base import SearchHit, VectorStore
 
 
@@ -58,7 +59,7 @@ class InMemoryVectorStore(VectorStore):
         if self._vectors is None:
             raise StoreError("cannot search an empty store")
         sims = cosine_similarity(query, self._vectors).ravel()
-        indices, scores = top_k(sims, top_k)
+        indices, scores = select_top_k(sims, top_k)
         return [
             SearchHit(id=self._ids[i], score=float(score), payload=self._payloads[i])
             for i, score in zip(indices, scores)

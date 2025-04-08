@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from tessera.encoders.base import Encoder
+from tessera.retrieval.fusion import weighted_fusion
 from tessera.retrieval.retriever import DenseRetriever
 from tessera.types import Chunk, Modality, RetrievalResult
 
@@ -39,7 +40,17 @@ class MultimodalRetriever:
         query_modality: Modality = Modality.TEXT,
         top_k: int = 5,
     ) -> list[RetrievalResult]:
-        """Retrieve from the text index (image fusion arrives in a follow-up)."""
-        if self._text is None or len(self._text.store) == 0:
+        """Query every populated index and fuse the hits into one ranked list."""
+        result_lists: list[list[RetrievalResult]] = []
+        weights: list[float] = []
+        if self._text is not None and len(self._text.store) > 0:
+            result_lists.append(self._text.retrieve(query, query_modality, top_k))
+            weights.append(self.text_weight)
+        if self._image is not None and len(self._image.store) > 0:
+            result_lists.append(self._image.retrieve(query, query_modality, top_k))
+            weights.append(self.image_weight)
+
+        if not result_lists:
             return []
-        return self._text.retrieve(query, query_modality, top_k)
+        fused = weighted_fusion(result_lists, weights)
+        return fused[:top_k]

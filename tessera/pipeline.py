@@ -46,3 +46,10 @@ class RagPipeline:
         """Queue documents for indexing; call :meth:`index` (or retrieve) to commit."""
         self._corpus.extend(documents)
         self._indexed = False
+
+    def index(self) -> None:
+        """(Re)build the retriever from every queued document."""
+        self.retriever = self._new_retriever()
+        chunks = self._corpus.to_chunks(self.config.chunk_size, self.config.chunk_overlap)
+        self.retriever.index(chunks)
+        self._indexed = True

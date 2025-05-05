@@ -11,7 +11,7 @@ from tessera.encoders.base import Encoder
 from tessera.generation.base import Generator
 from tessera.generation.template import TemplateGenerator
 from tessera.retrieval.multimodal import MultimodalRetriever
-from tessera.types import Document
+from tessera.types import Document, Modality, RetrievalResult
 
 
 class RagPipeline:
@@ -53,3 +53,15 @@ class RagPipeline:
         chunks = self._corpus.to_chunks(self.config.chunk_size, self.config.chunk_overlap)
         self.retriever.index(chunks)
         self._indexed = True
+
+    def retrieve(
+        self,
+        query: object,
+        query_modality: Modality = Modality.TEXT,
+        top_k: int | None = None,
+    ) -> list[RetrievalResult]:
+        """Return the chunks most relevant to ``query``, indexing lazily if needed."""
+        if not self._indexed:
+            self.index()
+        k = top_k if top_k is not None else self.config.top_k
+        return self.retriever.retrieve(query, query_modality, k)

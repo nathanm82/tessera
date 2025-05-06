@@ -8,7 +8,7 @@ from tessera.config import PipelineConfig
 from tessera.corpus import Corpus
 from tessera.encoders import get_encoder
 from tessera.encoders.base import Encoder
-from tessera.generation.base import Generator
+from tessera.generation.base import GeneratedAnswer, Generator
 from tessera.generation.template import TemplateGenerator
 from tessera.retrieval.multimodal import MultimodalRetriever
 from tessera.types import Document, Modality, RetrievalResult
@@ -65,3 +65,13 @@ class RagPipeline:
             self.index()
         k = top_k if top_k is not None else self.config.top_k
         return self.retriever.retrieve(query, query_modality, k)
+
+    def answer(
+        self,
+        query: str,
+        query_modality: Modality = Modality.TEXT,
+        top_k: int | None = None,
+    ) -> GeneratedAnswer:
+        """Retrieve context for ``query`` and generate a grounded answer."""
+        results = self.retrieve(query, query_modality, top_k)
+        return self.generator.generate(query, results)

@@ -14,6 +14,9 @@ dependencies = [
     "numpy>=1.21",
 ]
 
+[project.scripts]
+tessera = "tessera.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",

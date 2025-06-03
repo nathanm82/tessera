@@ -18,12 +18,18 @@ class MultimodalRetriever:
     so that a caller sees one ranked list spanning modalities.
     """
 
-    def __init__(self, encoder: Encoder, text_weight: float = 0.5, image_weight: float = 0.5) -> None:
+    def __init__(
+        self, encoder: Encoder, text_weight: float = 0.5, image_weight: float = 0.5
+    ) -> None:
         self.encoder = encoder
         self.text_weight = text_weight
         self.image_weight = image_weight
-        self._text = DenseRetriever(encoder, Modality.TEXT) if encoder.supports(Modality.TEXT) else None
-        self._image = DenseRetriever(encoder, Modality.IMAGE) if encoder.supports(Modality.IMAGE) else None
+        self._text = (
+            DenseRetriever(encoder, Modality.TEXT) if encoder.supports(Modality.TEXT) else None
+        )
+        self._image = (
+            DenseRetriever(encoder, Modality.IMAGE) if encoder.supports(Modality.IMAGE) else None
+        )
 
     def index(self, chunks: Sequence[Chunk]) -> None:
         """Partition ``chunks`` by modality and index each partition."""

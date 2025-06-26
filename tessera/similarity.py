@@ -12,8 +12,13 @@ from numpy.typing import NDArray
 
 
 def l2_normalize(matrix: NDArray[np.float32], axis: int = -1) -> NDArray[np.float32]:
-    """Return ``matrix`` with vectors scaled to unit L2 norm along ``axis``."""
+    """Return ``matrix`` with vectors scaled to unit L2 norm along ``axis``.
+
+    Zero vectors are left as zeros rather than producing ``nan`` -- an empty text
+    chunk or a degenerate embedding should not poison a whole similarity matrix.
+    """
     norms = np.linalg.norm(matrix, axis=axis, keepdims=True)
+    norms = np.where(norms == 0.0, 1.0, norms)
     return (matrix / norms).astype(np.float32)
 
 

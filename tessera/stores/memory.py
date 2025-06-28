@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from tessera.exceptions import DimensionMismatchError, StoreError
+from tessera.exceptions import DimensionMismatchError
 from tessera.similarity import cosine_similarity
 from tessera.similarity import top_k as select_top_k
 from tessera.stores.base import SearchHit, VectorStore
@@ -57,7 +57,7 @@ class InMemoryVectorStore(VectorStore):
 
     def search(self, query: NDArray[np.float32], top_k: int = 5) -> list[SearchHit]:
         if self._vectors is None:
-            raise StoreError("cannot search an empty store")
+            return []
         sims = cosine_similarity(query, self._vectors).ravel()
         indices, scores = select_top_k(sims, top_k)
         return [

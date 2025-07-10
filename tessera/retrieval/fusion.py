@@ -7,6 +7,13 @@ from collections.abc import Sequence
 from tessera.types import RetrievalResult
 
 
+def _rank(combined: dict[str, float], seen: dict[str, RetrievalResult]) -> list[RetrievalResult]:
+    """Materialize fused scores into results sorted best-first."""
+    fused = [RetrievalResult(chunk=seen[cid].chunk, score=score) for cid, score in combined.items()]
+    fused.sort(key=lambda result: result.score, reverse=True)
+    return fused
+
+
 def weighted_fusion(
     result_lists: Sequence[Sequence[RetrievalResult]],
     weights: Sequence[float] | None = None,
@@ -29,9 +36,7 @@ def weighted_fusion(
             combined[cid] = combined.get(cid, 0.0) + weight * result.score
             seen[cid] = result
 
-    fused = [RetrievalResult(chunk=seen[cid].chunk, score=score) for cid, score in combined.items()]
-    fused.sort(key=lambda result: result.score, reverse=True)
-    return fused
+    return _rank(combined, seen)
 
 
 def reciprocal_rank_fusion(
@@ -55,6 +60,4 @@ def reciprocal_rank_fusion(
             combined[cid] = combined.get(cid, 0.0) + 1.0 / (k + rank)
             seen[cid] = result
 
-    fused = [RetrievalResult(chunk=seen[cid].chunk, score=score) for cid, score in combined.items()]
-    fused.sort(key=lambda result: result.score, reverse=True)
-    return fused
+    return _rank(combined, seen)

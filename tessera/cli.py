@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from collections.abc import Sequence
 
 from tessera import __version__
@@ -58,8 +59,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if getattr(args, "command", None) is None:
         parser.print_help()
         return 0
-    handler = args.func
-    return int(handler(args))
+    try:
+        return int(args.func(args))
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"tessera: {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":  # pragma: no cover

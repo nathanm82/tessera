@@ -23,9 +23,12 @@ def chunk_text(text: str, chunk_size: int = 256, overlap: int = 32) -> list[str]
     if not words:
         return []
 
-    step = chunk_size
+    step = chunk_size - overlap
     chunks: list[str] = []
     for start in range(0, len(words), step):
         window = words[start : start + chunk_size]
         chunks.append(" ".join(window))
+        if start + chunk_size >= len(words):
+            # The window already reached the end; another step would only repeat it.
+            break
     return chunks

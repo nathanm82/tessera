@@ -23,7 +23,7 @@ def _cmd_query(args: argparse.Namespace) -> int:
     documents = list(load_jsonl(args.corpus))
     pipeline = RagPipeline()
     pipeline.add_documents(documents)
-    results = pipeline.retrieve(args.query)
+    results = pipeline.retrieve(args.query, top_k=args.top_k)
     if not results:
         print("(no results)")
         return 0
@@ -48,6 +48,9 @@ def build_parser() -> argparse.ArgumentParser:
     query_parser = sub.add_parser("query", help="retrieve chunks for a query over a corpus")
     query_parser.add_argument("corpus", help="path to a JSONL corpus file")
     query_parser.add_argument("query", help="the natural-language query")
+    query_parser.add_argument(
+        "-k", "--top-k", type=int, default=5, dest="top_k", help="number of results to return"
+    )
     query_parser.set_defaults(func=_cmd_query)
 
     return parser

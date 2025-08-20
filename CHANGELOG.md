@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0]
+
+### Added
+
+- `tessera query` accepts `-k/--top-k` to control how many results are returned.
+
 ## [0.1.0]
 
 ### Added
@@ -20,5 +26,6 @@ All notable changes to this project are documented here. The format follows
 - `RagPipeline` orchestrating index → retrieve → answer.
 - JSONL corpus loader and a `tessera` command-line interface.
 
-[Unreleased]: https://github.com/nathanm82/tessera/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/nathanm82/tessera/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/nathanm82/tessera/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/nathanm82/tessera/releases/tag/v0.1.0

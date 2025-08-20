@@ -67,3 +67,13 @@ from tessera.io import load_jsonl
 
 pipeline.add_documents(load_jsonl("corpus.jsonl"))
 ```
+
+## Command line
+
+```bash
+tessera index corpus.jsonl              # report document and chunk counts
+tessera query corpus.jsonl "a query"    # retrieve, printing score / doc id / snippet
+tessera query corpus.jsonl "a query" --top-k 10
+```
+
+A missing corpus file exits with a non-zero status and a one-line error.

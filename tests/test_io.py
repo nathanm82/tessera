@@ -8,9 +8,7 @@ from tessera.io import load_jsonl
 def test_load_jsonl_parses_records(tmp_path: Path) -> None:
     path = tmp_path / "corpus.jsonl"
     path.write_text(
-        '{"id": "1", "text": "hello", "lang": "en"}\n'
-        "\n"
-        '{"id": 2, "image": "/tmp/a.png"}\n',
+        '{"id": "1", "text": "hello", "lang": "en"}\n\n{"id": 2, "image": "/tmp/a.png"}\n',
         encoding="utf-8",
     )
     docs = list(load_jsonl(path))

@@ -13,7 +13,10 @@ from tessera import Document, PipelineConfig, RagPipeline
 from tessera.generation.template import TemplateGenerator
 
 DOCUMENTS = [
-    Document(id="d1", text="Retrieval-augmented generation grounds a model's answer in retrieved context."),
+    Document(
+        id="d1",
+        text="Retrieval-augmented generation grounds a model's answer in retrieved context.",
+    ),
     Document(id="d2", text="A dual encoder maps text and images into one shared vector space."),
     Document(id="d3", text="Fusion blends ranked results from several retrievers into one list."),
 ]

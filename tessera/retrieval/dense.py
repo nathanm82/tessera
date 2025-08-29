@@ -52,6 +52,5 @@ class DenseRetriever:
         query_vec = self.encoder.encode([query], query_modality)
         hits = self.store.search(query_vec, top_k=top_k)
         return [
-            RetrievalResult(chunk=Chunk.from_dict(hit.payload), score=hit.score)
-            for hit in hits
+            RetrievalResult(chunk=Chunk.from_dict(hit.payload), score=hit.score) for hit in hits
         ]

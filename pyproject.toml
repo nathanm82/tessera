@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tessera-rag"
+dynamic = ["version"]
+description = "Multimodal retrieval-augmented generation framework combining image and text encoders"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Nathanm" }]
+dependencies = [
+    "numpy>=1.21",
+]
+
+[tool.hatch.version]
+path = "tessera/__about__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tessera"]

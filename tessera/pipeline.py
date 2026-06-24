@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from pathlib import Path
 
 from tessera.config import PipelineConfig
 from tessera.corpus import Corpus
@@ -10,6 +11,7 @@ from tessera.encoders import get_encoder
 from tessera.encoders.base import Encoder
 from tessera.generation.base import GeneratedAnswer, Generator
 from tessera.generation.template import TemplateGenerator
+from tessera.io import load_jsonl
 from tessera.retrieval.multimodal import MultimodalRetriever
 from tessera.types import Document, Modality, RetrievalResult
 
@@ -34,6 +36,19 @@ class RagPipeline:
         self.retriever = self._new_retriever()
         self._corpus = Corpus()
         self._indexed = False
+
+    @classmethod
+    def from_jsonl(
+        cls,
+        path: str | Path,
+        config: PipelineConfig | None = None,
+        encoder: Encoder | None = None,
+        generator: Generator | None = None,
+    ) -> RagPipeline:
+        """Build a pipeline and load documents from a JSONL corpus in one call."""
+        pipeline = cls(config=config, encoder=encoder, generator=generator)
+        pipeline.add_documents(load_jsonl(path))
+        return pipeline
 
     def _new_retriever(self) -> MultimodalRetriever:
         return MultimodalRetriever(

@@ -34,3 +34,21 @@ def test_all_words_are_covered() -> None:
 def test_invalid_overlap_raises() -> None:
     with pytest.raises(ValueError):
         chunk_text("a b c", chunk_size=4, overlap=4)
+
+
+def test_consecutive_chunks_share_overlap_tokens() -> None:
+    words = [str(i) for i in range(20)]
+    chunks = chunk_text(" ".join(words), chunk_size=8, overlap=3)
+    assert len(chunks) > 1
+    first = chunks[0].split()
+    second = chunks[1].split()
+    # The last `overlap` tokens of one window open the next.
+    assert first[-3:] == second[:3]
+
+
+def test_no_redundant_trailing_chunk() -> None:
+    words = [str(i) for i in range(10)]
+    chunks = chunk_text(" ".join(words), chunk_size=8, overlap=4)
+    # No chunk should be fully contained in its predecessor.
+    for earlier, later in zip(chunks, chunks[1:]):
+        assert not set(later.split()).issubset(set(earlier.split()))

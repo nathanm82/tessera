@@ -32,3 +32,29 @@ def weighted_fusion(
     fused = [RetrievalResult(chunk=seen[cid].chunk, score=score) for cid, score in combined.items()]
     fused.sort(key=lambda result: result.score, reverse=True)
     return fused
+
+
+def reciprocal_rank_fusion(
+    result_lists: Sequence[Sequence[RetrievalResult]],
+    k: int = 60,
+) -> list[RetrievalResult]:
+    """Rank-based fusion that ignores raw score magnitudes (RRF).
+
+    Each list contributes ``1 / (k + rank)`` for the items it ranks, which makes the
+    method robust when retrievers report scores on different scales -- exactly the
+    case when fusing a dense text index with an image index.
+    """
+    if k <= 0:
+        raise ValueError("k must be positive")
+
+    combined: dict[str, float] = {}
+    seen: dict[str, RetrievalResult] = {}
+    for results in result_lists:
+        for rank, result in enumerate(results):
+            cid = result.chunk.id
+            combined[cid] = combined.get(cid, 0.0) + 1.0 / (k + rank)
+            seen[cid] = result
+
+    fused = [RetrievalResult(chunk=seen[cid].chunk, score=score) for cid, score in combined.items()]
+    fused.sort(key=lambda result: result.score, reverse=True)
+    return fused

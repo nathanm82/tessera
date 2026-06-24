@@ -5,8 +5,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from tessera.encoders.base import Encoder
+from tessera.retrieval.dense import DenseRetriever
 from tessera.retrieval.fusion import weighted_fusion
-from tessera.retrieval.retriever import DenseRetriever
 from tessera.types import Chunk, Modality, RetrievalResult
 
 

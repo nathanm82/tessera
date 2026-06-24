@@ -24,6 +24,13 @@ dev = [
     "ruff>=0.4",
     "mypy>=1.8",
 ]
+faiss = ["faiss-cpu>=1.7.4"]
+clip = [
+    "open-clip-torch>=2.20",
+    "torch>=1.13",
+    "pillow>=9.0",
+]
+all = ["tessera-rag[faiss,clip]"]
 
 [tool.hatch.version]
 path = "tessera/__about__.py"

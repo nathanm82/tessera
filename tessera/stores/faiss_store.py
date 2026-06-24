@@ -69,7 +69,9 @@ class FaissVectorStore(VectorStore):
         for score, idx in zip(scores[0], indices[0]):
             if idx < 0:
                 continue
-            hits.append(SearchHit(id=self._ids[idx], score=float(score), payload=self._payloads[idx]))
+            hits.append(
+                SearchHit(id=self._ids[idx], score=float(score), payload=self._payloads[idx])
+            )
         return hits
 
     def __len__(self) -> int:

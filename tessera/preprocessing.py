@@ -30,8 +30,3 @@ def text_document(doc_id: str, text: str, **metadata: object) -> Document:
 def image_document(doc_id: str, image_path: str, **metadata: object) -> Document:
     """Build an image-backed :class:`~tessera.types.Document` from a path."""
     return Document(id=doc_id, image=image_path, metadata=dict(metadata))
-
-
-def slugify(value: str) -> str:
-    # Left over from an early prototype that named indexes after their source file.
-    return "-".join(value.lower().split())

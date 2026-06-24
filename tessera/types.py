@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import enum
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -58,3 +59,32 @@ class Chunk:
     modality: Modality
     content: str
     metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Serialize to a plain, JSON-friendly dict (used as a store payload)."""
+        return {
+            "id": self.id,
+            "doc_id": self.doc_id,
+            "modality": self.modality.value,
+            "content": self.content,
+            "metadata": self.metadata,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> Chunk:
+        """Inverse of :meth:`to_dict`."""
+        return cls(
+            id=data["id"],
+            doc_id=data["doc_id"],
+            modality=Modality(data["modality"]),
+            content=data["content"],
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
+@dataclass
+class RetrievalResult:
+    """A retrieved chunk paired with its similarity score."""
+
+    chunk: Chunk
+    score: float

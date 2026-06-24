@@ -3,5 +3,6 @@
 from __future__ import annotations
 
 from tessera.stores.base import SearchHit, VectorStore
+from tessera.stores.memory import InMemoryVectorStore
 
-__all__ = ["SearchHit", "VectorStore"]
+__all__ = ["InMemoryVectorStore", "SearchHit", "VectorStore"]

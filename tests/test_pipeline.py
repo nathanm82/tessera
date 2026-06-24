@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from tessera.config import PipelineConfig
 from tessera.pipeline import RagPipeline
 from tessera.types import Document, Modality
@@ -37,3 +39,15 @@ def test_adding_documents_invalidates_index() -> None:
     # A fresh retrieve should see the newly added document after re-indexing.
     results = pipe.retrieve("programming language")
     assert any(r.chunk.doc_id == "d2" for r in results)
+
+
+def test_from_jsonl_loads_corpus(tmp_path: Path) -> None:
+    corpus = tmp_path / "corpus.jsonl"
+    corpus.write_text(
+        '{"id": "d1", "text": "coral reefs host marine species"}\n'
+        '{"id": "d2", "text": "python is a programming language"}\n',
+        encoding="utf-8",
+    )
+    pipe = RagPipeline.from_jsonl(corpus, PipelineConfig(top_k=1))
+    results = pipe.retrieve("marine species")
+    assert results[0].chunk.doc_id == "d1"

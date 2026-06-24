@@ -8,6 +8,7 @@ from collections.abc import Sequence
 import numpy as np
 from numpy.typing import NDArray
 
+from tessera.exceptions import EncoderError
 from tessera.types import Modality
 
 
@@ -39,3 +40,15 @@ class Encoder(abc.ABC):
     def encode_image(self, images: Sequence[object]) -> NDArray[np.float32]:
         """Embed a batch of images given as paths or raw bytes."""
         raise NotImplementedError(f"{type(self).__name__} does not support images")
+
+    def encode(self, items: Sequence[object], modality: Modality) -> NDArray[np.float32]:
+        """Embed ``items`` according to ``modality``.
+
+        A convenience dispatcher so callers can stay modality-agnostic; it routes
+        to :meth:`encode_text` or :meth:`encode_image`.
+        """
+        if modality is Modality.TEXT:
+            return self.encode_text([str(item) for item in items])
+        if modality is Modality.IMAGE:
+            return self.encode_image(items)
+        raise EncoderError(f"unsupported modality: {modality!r}")

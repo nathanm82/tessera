@@ -33,12 +33,15 @@ def _bucket(token: bytes, n_features: int) -> tuple[int, float]:
 class HashingEncoder(Encoder):
     """Feature-hashing encoder over a fixed number of buckets."""
 
-    supported_modalities = frozenset({Modality.TEXT})
+    supported_modalities = frozenset({Modality.TEXT, Modality.IMAGE})
 
-    def __init__(self, dim: int = 256) -> None:
+    def __init__(self, dim: int = 256, image_window: int = 8) -> None:
         if dim <= 0:
             raise ValueError("dim must be positive")
+        if image_window <= 0:
+            raise ValueError("image_window must be positive")
         self._dim = dim
+        self._image_window = image_window
 
     @property
     def dim(self) -> int:
@@ -51,3 +54,23 @@ class HashingEncoder(Encoder):
                 index, sign = _bucket(token.encode("utf-8"), self._dim)
                 out[row, index] += sign
         return out
+
+    def encode_image(self, images: Sequence[object]) -> NDArray[np.float32]:
+        out = np.zeros((len(images), self._dim), dtype=np.float32)
+        window = self._image_window
+        for row, image in enumerate(images):
+            data = self._read(image)
+            stop = max(len(data) - window, 1)
+            for start in range(0, stop, window):
+                index, sign = _bucket(data[start : start + window], self._dim)
+                out[row, index] += sign
+        return out
+
+    @staticmethod
+    def _read(image: object) -> bytes:
+        if isinstance(image, bytes):
+            return image
+        if isinstance(image, str):
+            with open(image, "rb") as handle:
+                return handle.read()
+        raise TypeError(f"cannot read image of type {type(image).__name__}")

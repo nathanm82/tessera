@@ -36,3 +36,9 @@ def test_query_returns_best_doc(tmp_path: Path) -> None:
     result = _run("query", str(corpus), "cat on the mat")
     assert result.returncode == 0
     assert "1" in result.stdout
+
+
+def test_missing_corpus_exits_nonzero(tmp_path: Path) -> None:
+    result = _run("index", str(tmp_path / "nope.jsonl"))
+    assert result.returncode == 2
+    assert "tessera:" in result.stderr

@@ -6,7 +6,7 @@ assemble a pipeline from a config without importing every backend up front.
 
 from __future__ import annotations
 
-from typing import Callable, Dict, Generic, List, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from tessera.exceptions import RegistrationError
 
@@ -18,7 +18,7 @@ class Registry(Generic[T]):
 
     def __init__(self, kind: str) -> None:
         self._kind = kind
-        self._factories: Dict[str, Callable[..., T]] = {}
+        self._factories: dict[str, Callable[..., T]] = {}
 
     def register(self, name: str, factory: Callable[..., T]) -> None:
         """Register ``factory`` under ``name`` (case-insensitive)."""
@@ -35,7 +35,7 @@ class Registry(Generic[T]):
             raise RegistrationError(f"unknown {self._kind} '{name}'; known: {known}")
         return self._factories[key](**kwargs)
 
-    def names(self) -> List[str]:
+    def names(self) -> list[str]:
         """Return the registered names, sorted."""
         return sorted(self._factories)
 

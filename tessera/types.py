@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import enum
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -30,8 +30,8 @@ class Document:
     """
 
     id: str
-    text: Optional[str] = None
-    image: Optional[Any] = None  # path-like str or raw bytes
+    text: str | None = None
+    image: Any | None = None  # path-like str or raw bytes
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def modalities(self) -> set[Modality]:

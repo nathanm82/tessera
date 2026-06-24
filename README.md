@@ -1,5 +1,10 @@
 # tessera
 
+[![CI](https://github.com/nathanm82/tessera/actions/workflows/ci.yml/badge.svg)](https://github.com/nathanm82/tessera/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Ruff](https://img.shields.io/badge/lint-ruff-261230)](https://github.com/astral-sh/ruff)
+
 Multimodal retrieval-augmented generation, built from small, swappable pieces.
 
 `tessera` indexes corpora that mix **images and text**, retrieves the most relevant
